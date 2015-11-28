@@ -21,3 +21,37 @@ LOCAL_DIR = 'data-hold/datagov-pages'
 #parse each file for company name, inventors, city, 
 
 
+DATA_DIR = "data-hold/txPatents"
+Dir.mkdir(DATA_DIR) unless File.exists?(DATA_DIR)
+
+HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
+
+page = Nokogiri::HTML(open(Base_URL+FIRST_URL))
+rows = page.css('tr')
+
+rows[1..].each do |row|
+  
+  hrefs = row.css("td a").first #I think the .first is a nokogirie thing where it just gets the first one of the set. no clue. but I will never know until I try.
+  
+  hrefs.each do |href|
+    remote_url = Base_URL + href
+    local_fname = "#{DATA_DIR}/#{File.basename(href)}.html"
+    unless File.exists?(local_fname)
+      puts "Fetching #{remote_url}..."
+      begin
+        patent_content = open(remote_url, HEADERS_HASH).read
+      rescue Exception=>e
+        puts "Error: #{e}"
+        sleep 5
+      else
+        File.open(local_fname, 'w'){|file| file.write(patent_content)}
+        puts "\t...Success, saved to #{local_fname}"
+      ensure
+        sleep 1.0 + rand
+      end  # done: begin/rescue
+    end # done: unless File.exists?
+    
+  end # done: hrefs.each
+
+  #######for each row do that then stop at http://patft.uspto.gov/netaicon/PTO/ftext.gif  and go to next row
+end # done: rows.each

@@ -15,9 +15,7 @@ rows = page.css('div.mw-content-ltr table.wikitable tr')
 
 rows[1..-2].each do |row|
   
-  hrefs = row.css("td a").map{ |a| 
-    a['href']
-  }.compact.uniq
+  hrefs = row.css("td a")
   
   hrefs.each do |href|
     remote_url = BASE_WIKIPEDIA_URL + href
