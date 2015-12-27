@@ -21,7 +21,7 @@ LOCAL_DIR = 'data-hold/datagov-pages'
 #parse each file for company name, inventors, city, 
 
 
-DATA_DIR = "data-hold/txPatents"
+DATA_DIR = "../txPatents"
 Dir.mkdir(DATA_DIR) unless File.exists?(DATA_DIR)
 
 HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
@@ -29,12 +29,12 @@ HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
 page = Nokogiri::HTML(open(Base_URL+FIRST_URL))
 rows = page.css('tr')
 
-rows[1..].each do |row|
+rows.each do |row|
   
   hrefs = row.css("td a").first #I think the .first is a nokogirie thing where it just gets the first one of the set. no clue. but I will never know until I try.
   
   hrefs.each do |href|
-    remote_url = Base_URL + href
+    remote_url = 'Base_URL + href'
     local_fname = "#{DATA_DIR}/#{File.basename(href)}.html"
     unless File.exists?(local_fname)
       puts "Fetching #{remote_url}..."
